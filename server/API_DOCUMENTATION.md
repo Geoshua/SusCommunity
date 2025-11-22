@@ -1,0 +1,333 @@
+# API Documentation
+
+## Overview
+
+This document describes the REST API endpoints for the SusCommunity backend server.
+
+Base URL: `http://localhost:8080` (development)
+
+## Authentication
+
+🚧 **TODO**: Authentication is not yet implemented. Currently, all endpoints use a temporary user ID.
+
+Future implementation will use JWT tokens or session-based authentication.
+
+## Endpoints
+
+### Health Check
+
+#### GET /
+
+Returns a simple health check message.
+
+**Response:**
+```
+Status: 200 OK
+Content-Type: text/plain
+
+Ktor: Hello, Android, Web, Server!
+```
+
+---
+
+## Posts API
+
+The Posts API manages the "Gig" & Volunteering Board where users can create and browse requests for help.
+
+### Create a Post
+
+#### POST /posts
+
+Creates a new post/request in the volunteering board.
+
+**Request Body:**
+
+```json
+{
+  "title": "Need help moving furniture",
+  "description": "Moving to a new apartment this weekend, need help with heavy items like couch and bed. Pizza and drinks provided!",
+  "location": {
+    "latitude": 48.1351,
+    "longitude": 11.5820,
+    "address": "Marienplatz, Munich"
+  },
+  "tag": "MOVING_HELP"
+}
+```
+
+**Request Fields:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `title` | string | Yes | Brief title (max 200 chars) |
+| `description` | string | Yes | Detailed description (max 2000 chars) |
+| `location` | object | Yes | Geographic location object |
+| `location.latitude` | number | Yes | Latitude (-90 to 90) |
+| `location.longitude` | number | Yes | Longitude (-180 to 180) |
+| `location.address` | string | No | Human-readable address |
+| `tag` | string | Yes | Post category (see Post Tags below) |
+
+**Post Tags:**
+
+- `PET_SITTING` - Pet care and sitting
+- `TUTORING` - Educational help and tutoring
+- `ELDERLY_COMPANY` - Companionship for elderly people
+- `MOWING` - Lawn mowing and gardening
+- `MOVING_HELP` - Moving assistance
+- `OTHER` - Other types of requests
+
+**Success Response:**
+
+```json
+Status: 201 Created
+Content-Type: application/json
+
+{
+  "post": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "title": "Need help moving furniture",
+    "description": "Moving to a new apartment this weekend...",
+    "location": {
+      "latitude": 48.1351,
+      "longitude": 11.5820,
+      "address": "Marienplatz, Munich"
+    },
+    "tag": "MOVING_HELP",
+    "authorId": "temp-user-id",
+    "createdAt": "2025-11-22T10:30:00Z",
+    "status": "OPEN"
+  },
+  "message": "Post created successfully"
+}
+```
+
+**Error Responses:**
+
+```json
+Status: 400 Bad Request
+Content-Type: application/json
+
+{
+  "error": "Title cannot be blank"
+}
+```
+
+Possible validation errors:
+- `"Title cannot be blank"`
+- `"Title must be 200 characters or less"`
+- `"Description cannot be blank"`
+- `"Description must be 2000 characters or less"`
+- `"Latitude must be between -90 and 90"`
+- `"Longitude must be between -180 and 180"`
+
+```json
+Status: 500 Internal Server Error
+Content-Type: application/json
+
+{
+  "error": "Failed to create post: <error message>"
+}
+```
+
+---
+
+### Get All Posts
+
+#### GET /posts
+
+Retrieves all posts from the volunteering board.
+
+**Query Parameters:**
+
+🚧 **TODO**: The following filters are not yet implemented:
+- `tag` - Filter by PostTag
+- `status` - Filter by PostStatus
+- `lat`, `lng`, `radius` - Filter by location proximity
+
+**Success Response:**
+
+```json
+Status: 200 OK
+Content-Type: application/json
+
+{
+  "posts": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Need help moving furniture",
+      "description": "Moving to a new apartment...",
+      "location": {
+        "latitude": 48.1351,
+        "longitude": 11.5820,
+        "address": "Marienplatz, Munich"
+      },
+      "tag": "MOVING_HELP",
+      "authorId": "temp-user-id",
+      "createdAt": "2025-11-22T10:30:00Z",
+      "status": "OPEN"
+    }
+  ],
+  "count": 1
+}
+```
+
+---
+
+### Get Post by ID
+
+#### GET /posts/{id}
+
+Retrieves a specific post by its unique ID.
+
+**Path Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | string (UUID) | The unique post identifier |
+
+**Success Response:**
+
+```json
+Status: 200 OK
+Content-Type: application/json
+
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "title": "Need help moving furniture",
+  "description": "Moving to a new apartment...",
+  "location": {
+    "latitude": 48.1351,
+    "longitude": 11.5820,
+    "address": "Marienplatz, Munich"
+  },
+  "tag": "MOVING_HELP",
+  "authorId": "temp-user-id",
+  "createdAt": "2025-11-22T10:30:00Z",
+  "status": "OPEN"
+}
+```
+
+**Error Response:**
+
+```json
+Status: 404 Not Found
+Content-Type: application/json
+
+{
+  "error": "Post not found"
+}
+```
+
+---
+
+## Data Models
+
+### Post
+
+Represents a request/post in the volunteering board.
+
+```typescript
+{
+  id: string | null,           // UUID, generated by server
+  title: string,                // Max 200 chars
+  description: string,          // Max 2000 chars
+  location: Location,
+  tag: PostTag,
+  authorId: string | null,      // Set by server from auth session
+  createdAt: string | null,     // ISO 8601 timestamp
+  status: PostStatus            // Default: "OPEN"
+}
+```
+
+### Location
+
+```typescript
+{
+  latitude: number,     // -90 to 90
+  longitude: number,    // -180 to 180
+  address: string?      // Optional human-readable address
+}
+```
+
+### PostStatus
+
+Enum values:
+- `OPEN` - Post is active and accepting volunteers
+- `IN_PROGRESS` - A volunteer has been assigned
+- `COMPLETED` - The task has been completed
+- `CANCELLED` - The post creator cancelled the request
+
+---
+
+## Testing the API
+
+### Using cURL
+
+**Create a post:**
+
+```bash
+curl -X POST http://localhost:8080/posts \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Need help with pet sitting",
+    "description": "Going on vacation for a week, need someone to feed my cat twice a day",
+    "location": {
+      "latitude": 48.1351,
+      "longitude": 11.5820,
+      "address": "Munich, Germany"
+    },
+    "tag": "PET_SITTING"
+  }'
+```
+
+**Get all posts:**
+
+```bash
+curl http://localhost:8080/posts
+```
+
+**Get a specific post:**
+
+```bash
+curl http://localhost:8080/posts/550e8400-e29b-41d4-a716-446655440000
+```
+
+---
+
+## Future Enhancements
+
+### Planned Features
+
+1. **Authentication & Authorization**
+   - JWT-based authentication
+   - User roles (NewMuencher, OldMuencher)
+   - Only post authors can edit/delete their posts
+
+2. **Post Management**
+   - PUT /posts/{id} - Update a post
+   - DELETE /posts/{id} - Delete a post
+   - POST /posts/{id}/volunteer - Volunteer for a post
+   - POST /posts/{id}/complete - Mark a post as completed
+
+3. **Filtering & Search**
+   - Filter posts by tag, status, date range
+   - Location-based search (find posts within X km)
+   - Full-text search in title/description
+
+4. **Database Integration**
+   - Replace in-memory storage with SQLDelight
+   - Implement proper data persistence
+   - Add database migrations
+
+5. **Pagination**
+   - Add pagination for GET /posts
+   - Query parameters: `page`, `limit`, `sort`
+
+6. **Validation**
+   - Add rate limiting
+   - Implement more robust validation
+   - Add sanitization for user input
+
+7. **Real-time Updates**
+   - WebSocket support for live post updates
+   - Push notifications when posts are created/updated

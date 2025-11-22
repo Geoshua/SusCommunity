@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmd /c gradlew.bat :server:run)",
+      "Bash(cmd /c \"gradlew.bat :server:build --info\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

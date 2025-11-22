@@ -1,0 +1,84 @@
+# Docker Compose configuration for SusCommunity PostgreSQL database
+# This sets up a containerized PostgreSQL instance for development and production
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgis/postgis:15-3.4
+    container_name: suscommunity-postgres
+    restart: unless-stopped
+
+    environment:
+      # Database credentials - CHANGE THESE IN PRODUCTION!
+      POSTGRES_DB: suscommunity
+      POSTGRES_USER: suscommunity_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me_in_production}
+
+      # PostgreSQL configuration
+      POSTGRES_INITDB_ARGS: "-E UTF8 --locale=en_US.UTF-8"
+
+    ports:
+      # Map PostgreSQL port to host
+      - "${POSTGRES_PORT:-5432}:5432"
+
+    volumes:
+      # Persist database data
+      - postgres_data:/var/lib/postgresql/data
+
+      # Mount initialization scripts
+      - ./server/database/init:/docker-entrypoint-initdb.d
+
+      # Mount custom PostgreSQL configuration (optional)
+      # - ./server/database/postgresql.conf:/etc/postgresql/postgresql.conf
+
+    networks:
+      - suscommunity-network
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U suscommunity_user -d suscommunity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # pgAdmin - Web UI for PostgreSQL management (optional, for development)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: suscommunity-pgadmin
+    restart: unless-stopped
+    profiles:
+      - tools  # Only start when explicitly requested: docker-compose --profile tools up
+
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@suscommunity.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+    networks:
+      - suscommunity-network
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+    driver: local
+    name: suscommunity_postgres_data
+
+  pgadmin_data:
+    driver: local
+    name: suscommunity_pgadmin_data
+
+networks:
+  suscommunity-network:
+    driver: bridge
+    name: suscommunity-network
