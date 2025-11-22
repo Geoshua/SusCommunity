@@ -2,50 +2,50 @@
 -- PostgreSQL schema for storing users, posts, and map data
 
 -- =============================================================================
--- USERS TABLE
+-- USERS TABLE (MVP: Simple username-based, no authentication)
 -- =============================================================================
 
 CREATE TABLE IF NOT EXISTS users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    email VARCHAR(255) NOT NULL UNIQUE,
-    username VARCHAR(100) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
+    username VARCHAR(100) PRIMARY KEY,  -- Username is the unique identifier (no UUID)
 
-    -- User role and profile
-    role VARCHAR(50) NOT NULL CHECK (role IN ('NEW_MUENCHER', 'OLD_MUENCHER')),
-    full_name VARCHAR(255),
+    -- User profile
+    display_name VARCHAR(255),
+    role VARCHAR(50) NOT NULL DEFAULT 'NEW_MUENCHER' CHECK (role IN ('NEW_MUENCHER', 'OLD_MUENCHER')),
     bio TEXT,
-    avatar_url TEXT,
 
-    -- Sustainability metrics
+    -- Identifiable attributes
+    age INTEGER CHECK (age > 0 AND age < 150),
+    gender VARCHAR(50) CHECK (gender IN ('MALE', 'FEMALE', 'NON_BINARY', 'PREFER_NOT_TO_SAY')),
+    has_pets BOOLEAN NOT NULL DEFAULT FALSE,
+    pet_types TEXT[],  -- Array of pet types (e.g., {'dog', 'cat', 'bird'})
+
+    -- Sustainability/Goodwill tracking
     sustainability_score INTEGER NOT NULL DEFAULT 0,
-    carbon_footprint_score INTEGER NOT NULL DEFAULT 0,
-
-    -- Account status
-    is_verified BOOLEAN NOT NULL DEFAULT FALSE,
-    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    green_title VARCHAR(50) NOT NULL DEFAULT 'BEGINNER' CHECK (green_title IN ('BEGINNER', 'ECO_CONSCIOUS', 'GREEN_WARRIOR', 'SUSTAINABILITY_HERO', 'PLANET_CHAMPION')),
+    goodwill_points INTEGER NOT NULL DEFAULT 0,
 
     -- Timestamps
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_login_at TIMESTAMP WITH TIME ZONE,
 
-    -- Location (optional for user's general area)
-    location GEOGRAPHY(POINT, 4326),
-
-    CONSTRAINT users_email_check CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')
+    CONSTRAINT users_username_check CHECK (LENGTH(username) > 0 AND LENGTH(username) <= 100),
+    CONSTRAINT users_scores_check CHECK (sustainability_score >= 0 AND goodwill_points >= 0)
 );
 
 -- Create indexes for users table
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_users_role ON users(role);
+CREATE INDEX idx_users_age ON users(age);
+CREATE INDEX idx_users_gender ON users(gender);
+CREATE INDEX idx_users_has_pets ON users(has_pets);
+CREATE INDEX idx_users_sustainability_score ON users(sustainability_score DESC);
+CREATE INDEX idx_users_green_title ON users(green_title);
 CREATE INDEX idx_users_created_at ON users(created_at DESC);
-CREATE INDEX idx_users_location ON users USING GIST(location);
 
-COMMENT ON TABLE users IS 'Stores user accounts for NewMuenchers and OldMuenchers';
+COMMENT ON TABLE users IS 'Stores user accounts for NewMuenchers and OldMuenchers (MVP: username-only, no passwords)';
 COMMENT ON COLUMN users.sustainability_score IS 'Gamification score based on sustainable actions';
-COMMENT ON COLUMN users.carbon_footprint_score IS 'Carbon footprint tracking score';
+COMMENT ON COLUMN users.green_title IS 'Title/badge based on sustainability score';
+COMMENT ON COLUMN users.goodwill_points IS 'Points earned by helping others in the community';
+COMMENT ON COLUMN users.pet_types IS 'Array of pet types the user owns (e.g., dog, cat, bird)';
 
 
 -- =============================================================================
@@ -54,7 +54,7 @@ COMMENT ON COLUMN users.carbon_footprint_score IS 'Carbon footprint tracking sco
 
 CREATE TABLE IF NOT EXISTS posts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    author_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    author_id VARCHAR(100) NOT NULL REFERENCES users(username) ON DELETE CASCADE,
 
     -- Post content
     title VARCHAR(200) NOT NULL,
@@ -92,6 +92,7 @@ CREATE INDEX idx_posts_title_trgm ON posts USING GIN(title gin_trgm_ops);
 CREATE INDEX idx_posts_description_trgm ON posts USING GIN(description gin_trgm_ops);
 
 COMMENT ON TABLE posts IS 'Posts for the Gig & Volunteering Board where users request help';
+COMMENT ON COLUMN posts.author_id IS 'Username of the post author';
 COMMENT ON COLUMN posts.location IS 'PostGIS geography point (latitude, longitude)';
 COMMENT ON COLUMN posts.female_only IS 'If true, only female volunteers should respond';
 
@@ -123,7 +124,7 @@ COMMENT ON TABLE post_images IS 'Images associated with posts (up to 10 per post
 CREATE TABLE IF NOT EXISTS post_responses (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     post_id UUID NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
-    volunteer_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    volunteer_id VARCHAR(100) NOT NULL REFERENCES users(username) ON DELETE CASCADE,
 
     message TEXT,
     status VARCHAR(50) NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'ACCEPTED', 'REJECTED', 'COMPLETED')),
@@ -164,7 +165,7 @@ CREATE TABLE IF NOT EXISTS map_locations (
 
     -- Metadata
     is_verified BOOLEAN NOT NULL DEFAULT FALSE,
-    submitted_by UUID REFERENCES users(id) ON DELETE SET NULL,
+    submitted_by VARCHAR(100) REFERENCES users(username) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -186,7 +187,7 @@ COMMENT ON COLUMN map_locations.location IS 'PostGIS geography point for map dis
 
 CREATE TABLE IF NOT EXISTS local_reports (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    reporter_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    reporter_id VARCHAR(100) NOT NULL REFERENCES users(username) ON DELETE CASCADE,
 
     -- Report details
     title VARCHAR(200) NOT NULL,
@@ -243,7 +244,7 @@ COMMENT ON TABLE report_images IS 'Photos attached to local reports';
 
 CREATE TABLE IF NOT EXISTS carbon_actions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id VARCHAR(100) NOT NULL REFERENCES users(username) ON DELETE CASCADE,
 
     -- Action details
     action_type VARCHAR(50) NOT NULL CHECK (action_type IN ('BIKE_RIDE', 'PUBLIC_TRANSPORT', 'RECYCLING', 'LOCAL_SHOPPING', 'VOLUNTEERING', 'PLANT_BASED_MEAL', 'OTHER')),

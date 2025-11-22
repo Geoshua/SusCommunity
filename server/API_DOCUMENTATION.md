@@ -1,16 +1,14 @@
-# API Documentation
+# API Documentation - User & Post System
 
 ## Overview
 
-This document describes the REST API endpoints for the SusCommunity backend server.
+This API provides endpoints for managing users and posts in the SusCommunity application. The system uses a simple username-based authentication (no passwords) where users are identified by their unique username.
 
-Base URL: `http://localhost:8080` (development)
+**Base URL:** `http://localhost:8081`
 
 ## Authentication
 
-🚧 **TODO**: Authentication is not yet implemented. Currently, all endpoints use a temporary user ID.
-
-Future implementation will use JWT tokens or session-based authentication.
+⚠️ **MVP Simple Username System**: No passwords required. Users are identified solely by their username. This is a simplified MVP implementation.
 
 ## Endpoints
 

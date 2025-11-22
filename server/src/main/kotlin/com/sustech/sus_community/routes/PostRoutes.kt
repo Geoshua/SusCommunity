@@ -1,7 +1,12 @@
 package com.sustech.sus_community.routes
 
 import com.sustech.sus_community.database.PostRepository
-import com.sustech.sus_community.models.*
+import com.sustech.sus_community.database.UserRepository
+import com.sustech.sus_community.models.CreatePostRequest
+import com.sustech.sus_community.models.CreatePostResponse
+import com.sustech.sus_community.models.PostListResponse
+import com.sustech.sus_community.models.Post
+import com.sustech.sus_community.models.PostStatus
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -15,6 +20,11 @@ import java.util.UUID
  * Uses SQLDelight for persistent storage.
  */
 private val postRepository = PostRepository()
+
+/**
+ * Repository for database operations on users.
+ */
+private val userRepository = UserRepository()
 
 /**
  * Configures routing for post-related endpoints.
@@ -79,6 +89,15 @@ fun Route.postRoutes() {
                     return@post
                 }
 
+                // Validate that the user exists
+                if (!userRepository.userExists(request.authorId)) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        mapOf("error" to "User '${request.authorId}' not found. Please create a user first.")
+                    )
+                    return@post
+                }
+
                 // Create the post with server-generated fields
                 val newPost = Post(
                     id = UUID.randomUUID().toString(),
@@ -89,7 +108,7 @@ fun Route.postRoutes() {
                     dueDate = request.dueDate,
                     femaleOnly = request.femaleOnly,
                     images = request.images,
-                    authorId = "22222222-2222-2222-2222-222222222222", // TODO: Get from authenticated user session (using mark_newmuencher for testing)
+                    authorId = request.authorId, // Use username as authorId
                     createdAt = Instant.now().toString(),
                     status = PostStatus.OPEN
                 )
@@ -99,7 +118,7 @@ fun Route.postRoutes() {
 
                 // Log the creation
                 call.application.environment.log.info(
-                    "Created post: id=${newPost.id}, title='${newPost.title}', tag=${newPost.tag}"
+                    "Created post: id=${newPost.id}, title='${newPost.title}', tag=${newPost.tag}, author=${newPost.authorId}"
                 )
 
                 // Return success response
@@ -110,6 +129,7 @@ fun Route.postRoutes() {
             } catch (e: Exception) {
                 // Log the error
                 call.application.environment.log.error("Error creating post", e)
+                e.printStackTrace()
 
                 // Return error response
                 call.respond(
@@ -276,6 +296,7 @@ fun Route.postRoutes() {
  * Validates a CreatePostRequest.
  *
  * Ensures that:
+ * - Username is not blank
  * - Title is not blank and within length limits
  * - Description is not blank and within length limits
  * - Location coordinates are valid (latitude: -90 to 90, longitude: -180 to 180)
@@ -286,6 +307,11 @@ fun Route.postRoutes() {
  * @return Error message if validation fails, null if valid
  */
 private fun validateCreatePostRequest(request: CreatePostRequest): String? {
+    // Validate username
+    if (request.authorId.isBlank()) {
+        return "AuthorID cannot be blank"
+    }
+
     // Validate title
     if (request.title.isBlank()) {
         return "Title cannot be blank"
