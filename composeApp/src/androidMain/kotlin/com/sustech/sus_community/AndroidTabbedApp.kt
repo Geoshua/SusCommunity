@@ -31,6 +31,7 @@ import com.sustech.sus_community.data.Post
 import com.sustech.sus_community.screens.HomeScreen
 import com.sustech.sus_community.ui.CreatePostScreen
 import com.sustech.sus_community.fakePosts
+import com.sustech.sus_community.screens.MapScreen
 
 private enum class AndroidTab(val label: String) {
     Feed("Feed"),
@@ -95,7 +96,9 @@ fun AndroidTabbedApp() {
                 )
 
                 AndroidTab.Favourites -> PlaceholderScreen("Favourites coming soon")
-                AndroidTab.Map -> PlaceholderScreen("Map coming soon")
+                AndroidTab.Map -> MapScreen(
+                            onBack = { selectedTab = AndroidTab.Feed }
+                        )
                 AndroidTab.Profile -> PlaceholderScreen("Profile coming soon")
             }
         }

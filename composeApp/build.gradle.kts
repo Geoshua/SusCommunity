@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.secrets.gradle.plugin)
 }
 
 kotlin {
@@ -32,6 +33,8 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(compose.materialIconsExtended)
+            implementation(libs.play.services.maps)
+            implementation("com.google.maps.android:maps-compose:6.12.0")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -66,6 +69,10 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    buildFeatures {
+        buildConfig = true
+        // ...
+    }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
@@ -75,7 +82,21 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    secrets {
+        // To add your Maps API key to this project:
+        // 1. If the secrets.properties file does not exist, create it in the same folder as the local.properties file.
+        // 2. Add this line, where YOUR_API_KEY is your API key:
+        //        MAPS_API_KEY=YOUR_API_KEY
+        propertiesFileName = "secrets.properties"
+
+        // A properties file containing default secret values. This file can be
+        // checked in version control.
+        defaultPropertiesFileName = "local.defaults.properties"
+    }
 }
+
+
+
 
 dependencies {
     debugImplementation(compose.uiTooling)

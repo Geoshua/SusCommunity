@@ -5,7 +5,7 @@ import com.sustech.sus_community.data.Post
 import com.sustech.sus_community.data.PostTag
 import com.sustech.sus_community.screens.HomeScreen
 import com.sustech.sus_community.ui.CreatePostScreen
-
+import com.sustech.sus_community.screens.MapScreen
 
 
 fun fakePosts() = listOf(
@@ -71,6 +71,10 @@ fun App() {
                 screen = "home"
             },
             onCancel = { screen = "home" }
+        )
+
+        "map" -> MapScreen(
+            onBack = { screen = "home"}
         )
     }
 }
