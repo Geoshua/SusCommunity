@@ -2,6 +2,7 @@ package com.sustech.sus_community
 
 import com.sustech.sus_community.database.DatabaseFactory
 import com.sustech.sus_community.routes.postRoutes
+import com.sustech.sus_community.routes.userRoutes
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -55,6 +56,9 @@ fun Application.module() {
         get("/") {
             call.respondText("Ktor: ${Greeting().greet()}")
         }
+
+        // User management endpoints
+        userRoutes()
 
         // Post/request management endpoints
         postRoutes()

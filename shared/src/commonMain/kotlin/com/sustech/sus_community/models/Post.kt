@@ -74,28 +74,7 @@ enum class PostStatus {
     CANCELLED       // The post creator cancelled the request
 }
 
-/**
- * Request payload for creating a new post.
- * This is what clients send to the POST /posts endpoint.
- *
- * @property title Brief title of the post/request
- * @property description Detailed description of what help is needed
- * @property location Geographic location where help is needed
- * @property tag Category of the request
- * @property dueDate Due date/time for the request (ISO 8601 format, e.g., "2025-12-25T14:00:00Z")
- * @property femaleOnly If true, only female volunteers should respond (default: false)
- * @property images List of image URLs to attach to this post (optional)
- */
-@Serializable
-data class CreatePostRequest(
-    val title: String,
-    val description: String,
-    val location: Location,
-    val tag: PostTag,
-    val dueDate: String,
-    val femaleOnly: Boolean = false,
-    val images: List<String> = emptyList()
-)
+
 
 /**
  * Response payload after successfully creating a post.
