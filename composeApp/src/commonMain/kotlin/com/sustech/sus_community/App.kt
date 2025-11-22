@@ -7,7 +7,6 @@ import com.sustech.sus_community.screens.HomeScreen
 import com.sustech.sus_community.ui.CreatePostScreen
 
 
-
 fun fakePosts() = listOf(
     Post(
         id = 1,
@@ -16,6 +15,7 @@ fun fakePosts() = listOf(
         description = "Join us for cleaning!",
         location = "Dorm 3",
         tags = listOf(PostTag.AskHelp, PostTag.Newcomer),
+        image = "https://www.vintagetreecare.com/wp-content/uploads/2023/06/planting-tree-1024x683.jpg"
     ),
     Post(
         id = 2,
@@ -24,6 +24,7 @@ fun fakePosts() = listOf(
         description = "Join our cleanup event",
         location = "Riverside Park",
         tags = listOf(PostTag.Event, PostTag.Volunteer),
+        image = "https://www.vintagetreecare.com/wp-content/uploads/2023/06/planting-tree-1024x683.jpg"
     ),
     Post(
         id = 3,
@@ -32,6 +33,7 @@ fun fakePosts() = listOf(
         description = "If you need help",
         location = "Library",
         tags = listOf(PostTag.OfferHelp, PostTag.Newcomer),
+        image = "https://www.vintagetreecare.com/wp-content/uploads/2023/06/planting-tree-1024x683.jpg"
     ),
     Post(
         id = 4,
@@ -40,6 +42,7 @@ fun fakePosts() = listOf(
         description = "Looking for two players!",
         location = "Sports Center",
         tags = listOf(PostTag.Event, PostTag.Volunteer),
+        image = "https://www.vintagetreecare.com/wp-content/uploads/2023/06/planting-tree-1024x683.jpg"
     )
 )
 
@@ -59,14 +62,15 @@ fun App() {
         )
 
         "create" -> CreatePostScreen(
-            onSubmit = { title, desc, tags, location ->
+            onSubmit = { title, desc, tags, location, image ->
                 posts = posts + Post(
                     id = posts.size + 1,
                     author = "You",
                     title = title,
                     description = desc,
                     tags = tags,
-                    location = location
+                    location = location,
+                    image = image
                 )
                 screen = "home"
             },

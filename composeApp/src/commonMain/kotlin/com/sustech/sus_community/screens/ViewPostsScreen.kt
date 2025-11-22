@@ -51,7 +51,7 @@ fun HomeScreen(
             val filteredPosts =
                 if (filter == null) posts
                 else posts.filter { post ->
-                    post.tags.contains(filter)     // <-- FIX
+                    post.tags.contains(filter)
                 }
 
             LazyColumn(

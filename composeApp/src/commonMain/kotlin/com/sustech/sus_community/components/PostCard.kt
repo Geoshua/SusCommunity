@@ -8,8 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.Image
-import org.jetbrains.compose.resources.painterResource
+
 
 @Composable
 fun PostCard(
@@ -22,6 +21,8 @@ fun PostCard(
         shape = MaterialTheme.shapes.medium
     ) {
         Column(Modifier.padding(20.dp)) {
+
+
 
             Text(
                 post.title,

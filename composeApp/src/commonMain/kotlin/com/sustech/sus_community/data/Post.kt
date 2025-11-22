@@ -17,5 +17,6 @@ data class Post(
     val description: String,
     val tags: List<PostTag>,
     val location: String,
-    val accepted: Boolean = false
+    val accepted: Boolean = false,
+    val image: String
 )
