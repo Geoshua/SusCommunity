@@ -6,15 +6,21 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.Image
-import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.outlined.Bookmarks
+import androidx.compose.ui.Alignment
 
+@Preview
 @Composable
 fun PostCard(
     post: Post,
-    onAccept: (Int) -> Unit
+    onAccept: (Int) -> Unit,
+    isSaved: Boolean,
+    onToggleSaved: (Int) -> Unit
 ) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
@@ -53,20 +59,36 @@ fun PostCard(
 
             Spacer(Modifier.height(12.dp))
 
-            if (!post.accepted) {
-                Button(
-                    onClick = { onAccept(post.id) },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.medium
-                ) {
-                    Text("Accept Request")
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (!post.accepted) {
+                    Button(
+                        onClick = { onAccept(post.id) },
+                        modifier = Modifier.weight(1f),
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Text("Accept Request")
+                    }
+                } else {
+                    Text(
+                        "Accepted",
+                        color = Color(0xFF34C759),
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.weight(1f)
+                    )
                 }
-            } else {
-                Text(
-                    "Accepted",
-                    color = Color(0xFF34C759),
-                    style = MaterialTheme.typography.bodyLarge
-                )
+
+                Spacer(Modifier.width(12.dp))
+
+                IconButton(
+                    onClick = { onToggleSaved(post.id) }
+                ) {
+                    Icon(
+                        imageVector = if (isSaved) Icons.Filled.Bookmarks else Icons.Outlined.Bookmarks,
+                        contentDescription = if (isSaved) "Saved ✓" else "+Save"
+                    )
+                }
             }
         }
     }

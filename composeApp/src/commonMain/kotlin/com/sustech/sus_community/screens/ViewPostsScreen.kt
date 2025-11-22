@@ -18,7 +18,9 @@ import com.sustech.sus_community.ui.PostCard
 fun HomeScreen(
     posts: List<Post>,
     onAccept: (Int) -> Unit,
-    onCreatePost: () -> Unit
+    onCreatePost: () -> Unit,
+    savedIds: Set<Int>,
+    onToggleSaved: (Int) -> Unit
 ) {
     var filter by remember { mutableStateOf<PostTag?>(null) } // null = show all
 
@@ -58,12 +60,19 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(18.dp)
             ) {
                 items(filteredPosts) { post ->
-                    PostCard(post, onAccept)
+                    PostCard(
+                        post = post,
+                        onAccept = onAccept,
+                        isSaved = savedIds.contains(post.id),
+                        onToggleSaved = onToggleSaved
+                    )
                 }
             }
         }
     }
 }
+
+
 
 @Composable
 fun FilterRow(
