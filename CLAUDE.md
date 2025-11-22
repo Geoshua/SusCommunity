@@ -83,7 +83,7 @@ Current To-Dos (Prioritized):
 
 4.    UI Skeleton: Create the Main Scaffold (Bottom Navigation) shared across both platforms.
       - top 40% of the page: Map (Sustainability Locations).
-      - middle of the page: Create a new post/item
+      - middle of the page: Create a new post/item us
       - bottom: Feed (Requests).
       - Tab 2: Profile (Carbon Score).
 

@@ -1,0 +1,61 @@
+-- Post table schema for the "Gig" & Volunteering Board
+-- Stores all posts/requests created by users
+
+CREATE TABLE IF NOT EXISTS Post (
+    id TEXT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    -- Location fields
+    latitude REAL NOT NULL,
+    longitude REAL NOT NULL,
+    address TEXT,
+    -- Post attributes
+    tag TEXT NOT NULL,
+    dueDate TEXT NOT NULL,
+    femaleOnly INTEGER NOT NULL DEFAULT 0,
+    images TEXT NOT NULL DEFAULT '',  -- Stored as comma-separated URLs
+    -- Metadata
+    authorId TEXT NOT NULL,
+    createdAt TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'OPEN'
+);
+
+-- Create index on tag for faster filtering
+CREATE INDEX IF NOT EXISTS idx_post_tag ON Post(tag);
+
+-- Create index on status for faster filtering
+CREATE INDEX IF NOT EXISTS idx_post_status ON Post(status);
+
+-- Create index on dueDate for sorting by deadline
+CREATE INDEX IF NOT EXISTS idx_post_dueDate ON Post(dueDate);
+
+-- Queries
+
+-- Insert a new post
+insertPost:
+INSERT INTO Post(id, title, description, latitude, longitude, address, tag, dueDate, femaleOnly, images, authorId, createdAt, status)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+-- Get all posts
+getAllPosts:
+SELECT * FROM Post ORDER BY createdAt DESC;
+
+-- Get post by ID
+getPostById:
+SELECT * FROM Post WHERE id = ?;
+
+-- Get posts by tag
+getPostsByTag:
+SELECT * FROM Post WHERE tag = ? ORDER BY createdAt DESC;
+
+-- Get posts by status
+getPostsByStatus:
+SELECT * FROM Post WHERE status = ? ORDER BY createdAt DESC;
+
+-- Delete post by ID
+deletePostById:
+DELETE FROM Post WHERE id = ?;
+
+-- Update post status
+updatePostStatus:
+UPDATE Post SET status = ? WHERE id = ?;

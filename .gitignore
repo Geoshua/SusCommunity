@@ -17,3 +17,17 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+sus_community.db
+
+# Environment variables and secrets
+.env
+.env.local
+.env.production
+
+# Docker volumes
+postgres_data/

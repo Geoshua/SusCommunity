@@ -1,5 +1,6 @@
 package com.sustech.sus_community
 
+import com.sustech.sus_community.database.DatabaseFactory
 import com.sustech.sus_community.routes.postRoutes
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -13,11 +14,16 @@ import kotlinx.serialization.json.Json
 /**
  * Main entry point for the Ktor server application.
  *
- * Starts an embedded Netty server on the port defined in SERVER_PORT (default: 8080).
+ * Initializes the SQLDelight database and starts an embedded Netty server
+ * on the port defined in SERVER_PORT (default: 8081).
  * The server listens on all network interfaces (0.0.0.0) to accept connections from
  * both localhost and external clients (e.g., Android emulator, physical devices).
  */
 fun main() {
+    // Initialize the database
+    DatabaseFactory.init()
+
+    // Start the server
     embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 }

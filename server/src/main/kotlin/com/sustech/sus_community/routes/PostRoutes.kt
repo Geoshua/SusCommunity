@@ -1,5 +1,6 @@
 package com.sustech.sus_community.routes
 
+import com.sustech.sus_community.database.PostRepository
 import com.sustech.sus_community.models.*
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -10,12 +11,10 @@ import java.time.Instant
 import java.util.UUID
 
 /**
- * In-memory storage for posts.
- * TODO: Replace with SQLDelight database in Phase 2
- *
- * This temporary storage allows testing the API endpoints before the database is set up.
+ * Repository for database operations on posts.
+ * Uses SQLDelight for persistent storage.
  */
-private val posts = mutableListOf<Post>()
+private val postRepository = PostRepository()
 
 /**
  * Configures routing for post-related endpoints.
@@ -90,13 +89,13 @@ fun Route.postRoutes() {
                     dueDate = request.dueDate,
                     femaleOnly = request.femaleOnly,
                     images = request.images,
-                    authorId = "temp-user-id", // TODO: Get from authenticated user session
+                    authorId = "22222222-2222-2222-2222-222222222222", // TODO: Get from authenticated user session (using mark_newmuencher for testing)
                     createdAt = Instant.now().toString(),
                     status = PostStatus.OPEN
                 )
 
-                // Store the post (in-memory for now)
-                posts.add(newPost)
+                // Store the post in the database
+                postRepository.insertPost(newPost)
 
                 // Log the creation
                 call.application.environment.log.info(
@@ -136,11 +135,12 @@ fun Route.postRoutes() {
          * }
          */
         get {
+            val allPosts = postRepository.getAllPosts()
             call.respond(
                 HttpStatusCode.OK,
                 PostListResponse(
-                    posts = posts,
-                    count = posts.size
+                    posts = allPosts,
+                    count = allPosts.size
                 )
             )
         }
@@ -149,11 +149,18 @@ fun Route.postRoutes() {
          * GET /posts/{id}
          *
          * Retrieves a specific post by its ID.
-         * TODO: Implement this endpoint
          */
         get("/{id}") {
             val id = call.parameters["id"]
-            val post = posts.find { it.id == id }
+            if (id == null) {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    mapOf("error" to "Post ID is required")
+                )
+                return@get
+            }
+
+            val post = postRepository.getPostById(id)
 
             if (post != null) {
                 call.respond(HttpStatusCode.OK, post)
@@ -163,6 +170,104 @@ fun Route.postRoutes() {
                     mapOf("error" to "Post not found")
                 )
             }
+        }
+
+        /**
+         * PUT /posts/{id}
+         *
+         * Updates an existing post.
+         *
+         * Request body (JSON) - same as POST /posts
+         */
+        put("/{id}") {
+            val id = call.parameters["id"]
+            if (id == null) {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    mapOf("error" to "Post ID is required")
+                )
+                return@put
+            }
+
+            // Check if post exists
+            val existingPost = postRepository.getPostById(id)
+            if (existingPost == null) {
+                call.respond(
+                    HttpStatusCode.NotFound,
+                    mapOf("error" to "Post not found")
+                )
+                return@put
+            }
+
+            try {
+                val request = call.receive<CreatePostRequest>()
+
+                // Validate the request
+                val validationError = validateCreatePostRequest(request)
+                if (validationError != null) {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to validationError))
+                    return@put
+                }
+
+                // Create updated post object (keep original id, createdAt, authorId)
+                val updatedPost = Post(
+                    id = id,
+                    title = request.title,
+                    description = request.description,
+                    location = request.location,
+                    tag = request.tag,
+                    dueDate = request.dueDate,
+                    femaleOnly = request.femaleOnly,
+                    images = request.images,
+                    authorId = existingPost.authorId, // Keep original author
+                    createdAt = existingPost.createdAt, // Keep original creation time
+                    status = existingPost.status // Keep current status
+                )
+
+                // Update the post in the database
+                postRepository.updatePost(id, updatedPost)
+
+                call.respond(HttpStatusCode.OK, mapOf("post" to updatedPost))
+            } catch (e: Exception) {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    mapOf("error" to "Invalid request body: ${e.message}")
+                )
+            }
+        }
+
+        /**
+         * DELETE /posts/{id}
+         *
+         * Deletes a post by its ID.
+         */
+        delete("/{id}") {
+            val id = call.parameters["id"]
+            if (id == null) {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    mapOf("error" to "Post ID is required")
+                )
+                return@delete
+            }
+
+            // Check if post exists
+            val existingPost = postRepository.getPostById(id)
+            if (existingPost == null) {
+                call.respond(
+                    HttpStatusCode.NotFound,
+                    mapOf("error" to "Post not found")
+                )
+                return@delete
+            }
+
+            // Delete the post
+            postRepository.deletePostById(id)
+
+            call.respond(
+                HttpStatusCode.OK,
+                mapOf("message" to "Post deleted successfully", "id" to id)
+            )
         }
     }
 }
