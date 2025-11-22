@@ -172,7 +172,7 @@ class PostRepository {
         val connection: java.sql.Connection = DatabaseFactory.getJdbcConnection()
         val sql = """
             INSERT INTO posts (id, author_id, title, description, tag, location, address, due_date, female_only, status, created_at)
-            VALUES (?::uuid, ?::uuid, ?, ?, ?, ST_SetSRID(ST_MakePoint(?, ?), 4326), ?, ?::timestamp, ?, ?, ?::timestamp)
+            VALUES (?::uuid, ?, ?, ?, ?, ST_SetSRID(ST_MakePoint(?, ?), 4326), ?, ?::timestamp, ?, ?, ?::timestamp)
         """.trimIndent()
 
         connection.prepareStatement(sql).use { stmt ->

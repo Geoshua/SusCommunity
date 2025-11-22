@@ -14,6 +14,15 @@ application {
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
+tasks.withType<JavaExec>().configureEach {
+    if (name == "run") { // This targets the 'run' task
+        // Set environment variables for the 'run' task, falling back to defaults if not already set
+        environment("DATABASE_URL", System.getenv("DATABASE_URL") ?: "jdbc:postgresql://localhost:5432/suscommunity")
+        environment("DATABASE_USER", System.getenv("DATABASE_USER") ?: "suscommunity_user")
+        environment("DATABASE_PASSWORD", System.getenv("DATABASE_PASSWORD") ?: "dev_password_2024")
+    }
+}
+
 dependencies {
     implementation(projects.shared)
     implementation(libs.logback)
