@@ -1,49 +1,76 @@
 package com.sustech.sus_community
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.sustech.sus_community.data.Post
+import com.sustech.sus_community.data.PostTag
+import com.sustech.sus_community.screens.HomeScreen
+import com.sustech.sus_community.ui.CreatePostScreen
 
-import sus_community.composeapp.generated.resources.Res
-import sus_community.composeapp.generated.resources.compose_multiplatform
+
+
+fun fakePosts() = listOf(
+    Post(
+        id = 1,
+        author = "Alice",
+        title = "Campus cleanup",
+        description = "Join us for cleaning!",
+        location = "Dorm 3",
+        tags = listOf(PostTag.AskHelp, PostTag.Newcomer),
+    ),
+    Post(
+        id = 2,
+        author = "Ben",
+        title = "Community cleanup event",
+        description = "Join our cleanup event",
+        location = "Riverside Park",
+        tags = listOf(PostTag.Event, PostTag.Volunteer),
+    ),
+    Post(
+        id = 3,
+        author = "Chen",
+        title = "Offering free German help",
+        description = "If you need help",
+        location = "Library",
+        tags = listOf(PostTag.OfferHelp, PostTag.Newcomer),
+    ),
+    Post(
+        id = 4,
+        author = "Dana",
+        title = "Volleyball players",
+        description = "Looking for two players!",
+        location = "Sports Center",
+        tags = listOf(PostTag.Event, PostTag.Volunteer),
+    )
+)
+
 
 @Composable
-@Preview
 fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
-                }
-            }
-        }
+    var screen by remember { mutableStateOf("home") }
+    var posts by remember { mutableStateOf(fakePosts()) }
+
+    when (screen) {
+        "home" -> HomeScreen(
+            posts = posts,
+            onAccept = { id ->
+                posts = posts.map { if (it.id == id) it.copy(accepted = true) else it }
+            },
+            onCreatePost = { screen = "create" }
+        )
+
+        "create" -> CreatePostScreen(
+            onSubmit = { title, desc, tags, location ->
+                posts = posts + Post(
+                    id = posts.size + 1,
+                    author = "You",
+                    title = title,
+                    description = desc,
+                    tags = tags,
+                    location = location
+                )
+                screen = "home"
+            },
+            onCancel = { screen = "home" }
+        )
     }
 }
