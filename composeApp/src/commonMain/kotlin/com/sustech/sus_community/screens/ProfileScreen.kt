@@ -53,7 +53,7 @@ fun ProfileScreen(user: User) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(220.dp)
+                        .height(250.dp)
                         .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
                         .background(Color(0xFF06402B)
                         )
@@ -63,6 +63,7 @@ fun ProfileScreen(user: User) {
                 Row (
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(top = 30.dp)
                         .height(220.dp)
                         .padding(horizontal = 20.dp, vertical = 16.dp)
                         .align(Alignment.BottomCenter),
@@ -216,12 +217,12 @@ private fun SectionCard(title: String, content: @Composable () -> Unit) {
         colors = CardDefaults.elevatedCardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(12.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.SemiBold)
-            Spacer(Modifier.height(8.dp))
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(text = title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+            Spacer(Modifier.height(6.dp))
             content()
         }
     }
