@@ -19,8 +19,7 @@ enum class UserRole {
 enum class Gender {
     MALE,
     FEMALE,
-    NON_BINARY,
-    PREFER_NOT_TO_SAY
+    NON_BINARY
 }
 
 /**
