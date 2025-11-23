@@ -151,7 +151,7 @@ actual fun MapContainer(
             },
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .padding(top = 16.dp)
+                .padding(top = 48.dp, start = 16.dp, end = 16.dp)
         )
 
         // Draggable bottom sheet
@@ -249,7 +249,10 @@ fun DraggableBottomSheet(
             .height(sheetHeight)
             .clickable { onExpandedChange(!isExpanded) },
         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
