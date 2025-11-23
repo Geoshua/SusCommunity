@@ -74,5 +74,50 @@ Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-mu
 [Kotlin/Wasm](https://kotl.in/wasm/)…
 
 We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack
+
+## Inspiration
+Modern neighborhoods often feel disconnected — people live close together but don’t actually interact or share resources. At the same time, communities are facing rising sustainability challenges: waste, overconsumption, isolation, and lack of local support systems.
+We wanted to create something simple that helps people connect, help each other, and build more sustainable habits together.
+##What it does
+GOAL: Pushing sustainability as a community
+Enforcing sustainability through community activities.
+Strengthen the community by helping each other out.
+
+## How we built it
+We used Kotlin Multiplatform with Compose Multiplatform to build one shared codebase for both Android and Web.
+This includes:
+Shared UI using Compose
+Shared logic, models, and repositories
+Compose for Web for front-end deployment
+Compose for Android for the mobile app
+Ktor for networking
+Lightweight in-memory or file-based storage for prototyping
+Interactive Map that marks the locations of user requests, events and sustainable items(bike rentals, recycle stations)
+Backend and database: Ktor postgresql
+Functional Backend RESTful API for POST, UPDATE and GET user posts. POST and GET users
+## Challenges we ran into
+Styling differences between web and mobile layouts
+Displaying a map via Google API in the web version
+
+
+## Accomplishments that we're proud of
+Having first time experience with Kotlin and Kotlin Multiplatform
+
+## What we learned
+Do not use any kind of ad blocker when testing on the web!
+
+##What's next for SusTech
+
+
+## Built With
+Kotlin Multiplatform
+Compose Multiplatform (Android + Web)
+Ktor
+Gradle
+Sleep deprivation
+Caffeinated drinks
+Determination
+
+
 channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
 If you face any issues, please report them on [YouTrack](https://youtrack.jetbrains.com/newIssue?project=CMP).
