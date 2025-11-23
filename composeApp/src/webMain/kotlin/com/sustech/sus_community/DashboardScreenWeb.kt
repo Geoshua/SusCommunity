@@ -24,8 +24,12 @@ import androidx.compose.runtime.setValue
 import com.sustech.sus_community.screens.HomeScreen
 import androidx.compose.ui.graphics.Color
 import com.sustech.sus_community.data.Post
+import com.sustech.sus_community.models.Gender
+import com.sustech.sus_community.models.User
+import com.sustech.sus_community.models.UserRole
 import com.sustech.sus_community.screens.MapScreen
 import com.sustech.sus_community.screens.PostDetailsScreen
+import com.sustech.sus_community.screens.ProfileScreen
 import com.sustech.sus_community.ui.CreatePostScreen
 
 private val SusBlue = Color(0xFF1A73E8)     // Google-style blue
@@ -46,6 +50,22 @@ fun DashboardScreenWeb() {
     // Track whether middle column shows posts or create post UI
     var middleView by remember { mutableStateOf(MiddleView.POSTS) }
     var selectedPost by remember { mutableStateOf<Post?>(null) }
+
+    val currentUser = remember {
+        User(
+            username = "johndoe",
+            displayName = "John Doe",
+            role = UserRole.OLD_MUENCHER,
+            age = 28,
+            gender = Gender.MALE,
+            hasPets = true,
+            petTypes = listOf("Dog"),
+            sustainabilityScore = 180,
+            goodwillPoints = 42,
+            bio = "Old Müncher happy to help newcomers settle in. Love biking and zero‑waste living!",
+            createdAt = "2024-11-01"
+        )
+    }
 
 
     val onAccept: (Int) -> Unit = { id ->
@@ -84,17 +104,7 @@ fun DashboardScreenWeb() {
                     .fillMaxHeight()
                     .padding(16.dp)
             ) {
-                HomeScreen(
-                    posts = posts,
-                    onAccept = onAccept,
-                    onCreatePost = { middleView = MiddleView.CREATE },
-                    savedIds = emptySet(),
-                    onToggleSaved = {},
-                    onClickDetails = { post ->
-                        selectedPost = post
-                        middleView = MiddleView.DETAILS
-                    }
-                )
+                ProfileScreen(currentUser)
             }
 
             Box(
