@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import com.sustech.sus_community.data.Post
 import com.sustech.sus_community.data.PostTag
 import com.sustech.sus_community.ui.PostCard
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,7 +28,7 @@ fun HomeScreen(
 
     Column(
         modifier = Modifier
-            .padding(50.dp)
+            .padding(top = 50.dp, start = 20.dp, end = 20.dp)
             .fillMaxSize()
     ) {
         Text("Latest", style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Bold)

@@ -5,14 +5,12 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -30,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -45,7 +42,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import com.sustech.sus_community.models.UserRole
 
 
-@Preview
 @Composable
 fun ProfileScreen(user: User) {
     Surface(modifier = Modifier.fillMaxSize()) {
@@ -55,15 +51,9 @@ fun ProfileScreen(user: User) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(220.dp)
+                        .height(250.dp)
                         .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.primary,
-                                    MaterialTheme.colorScheme.secondary
-                                )
-                            )
+                        .background(Color(0xFF06402B)
                         )
                 )
                 // Overlay: avatar, name, username, and stats on top of gradient
@@ -71,6 +61,7 @@ fun ProfileScreen(user: User) {
                 Row (
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(top = 30.dp)
                         .height(220.dp)
                         .padding(horizontal = 20.dp, vertical = 16.dp)
                         .align(Alignment.BottomCenter),
@@ -80,28 +71,28 @@ fun ProfileScreen(user: User) {
                     Box(
                         modifier = Modifier
                             .size(150.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.surface)
-                            .shadow(8.dp, CircleShape, clip = false),
+                        ,
                         contentAlignment = Alignment.Center
                     ) {
-                        // subtle radial tint
+                        // Under white circle (full size)
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(
-                                    brush = Brush.radialGradient(
-                                        colors = listOf(
-                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.14f),
-                                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.04f)
-                                        )
-                                    )
-                                )
+                                .clip(CircleShape)
+                                .background(Color.White)
+                        )
+
+                        // Upper smaller light green circle
+                        Box(
+                            modifier = Modifier
+                                .size(130.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFFBBB791))
                         )
                         Text(
                             text = initials,
-                            style = MaterialTheme.typography.displaySmall,
-                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.displayLarge,
+                            color = Color(0xFF0F1210),
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -221,12 +212,15 @@ private fun StatChip(label: String?, value: String, headerStyle: Boolean = false
 private fun SectionCard(title: String, content: @Composable () -> Unit) {
     ElevatedCard(
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
+        shape = RoundedCornerShape(12.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.SemiBold)
-            Spacer(Modifier.height(8.dp))
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(text = title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+            Spacer(Modifier.height(6.dp))
             content()
         }
     }
@@ -313,6 +307,9 @@ private data class Badge(
 private fun BadgeChip(badge: Badge) {
     ElevatedCard(
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .width(110.dp)
