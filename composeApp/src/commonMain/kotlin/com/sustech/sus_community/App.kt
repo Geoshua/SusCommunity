@@ -15,9 +15,9 @@ fun fakePosts() = listOf(
         title = "Trash Pickup event",
         description = "Join us for a community clean-up around Dorm 3! We’ll provide gloves, bags, and snacks.\n" +
                 "All students, volunteers, and newcomers are welcome — let’s make our campus greener together!",
-        location = "Dorm 3",
+        location = "Park Ave 23",
         tags = listOf(PostTag.AskHelp, PostTag.Newcomer),
-        image = "https://loveincorporated.blob.core.windows.net/contentimages/gallery/03211459-0607-4d07-8a6c-9966e3820a7d-Mount-Kirkjufell-Iceland.jpg"
+        image = ""
     ),
     Post(
         id = 2,

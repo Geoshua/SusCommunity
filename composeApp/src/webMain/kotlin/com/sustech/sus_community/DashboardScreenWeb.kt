@@ -175,7 +175,10 @@ fun DashboardScreenWeb() {
                     .fillMaxHeight()
                     .padding(16.dp)
             ) {
-                MapScreen(null)
+                KamelImage(
+                    resource = asyncPainterResource("map.png"),
+                    contentDescription = "Map"
+                )
             }
         }
     }
