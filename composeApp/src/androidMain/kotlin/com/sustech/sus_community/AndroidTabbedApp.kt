@@ -87,14 +87,15 @@ fun AndroidTabbedApp() {
                 )
 
                 AndroidTab.Create -> CreatePostScreen(
-                    onSubmit = { title, desc, tags, location ->
+                    onSubmit = { title, desc, tags, location, image ->
                         posts = posts + Post(
                             id = posts.size + 1,
                             author = "You",
                             title = title,
                             description = desc,
                             tags = tags,
-                            location = location
+                            location = location,
+                            image = image
                         )
                         selectedTab = AndroidTab.Feed
                     },
@@ -110,7 +111,9 @@ fun AndroidTabbedApp() {
                         savedIds = if (savedIds.contains(id)) savedIds - id else savedIds + id
                     }
                 )
-                AndroidTab.Map -> PlaceholderScreen("Map coming soon")
+                AndroidTab.Map -> MapScreen(
+                    onBack = { selectedTab = AndroidTab.Feed }
+                )
                 AndroidTab.Profile -> PlaceholderScreen("Profile coming soon")
             }
         }
