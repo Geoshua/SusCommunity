@@ -20,7 +20,8 @@ fun HomeScreen(
     onAccept: (Int) -> Unit,
     onCreatePost: () -> Unit,
     savedIds: Set<Int>,
-    onToggleSaved: (Int) -> Unit
+    onToggleSaved: (Int) -> Unit,
+    onClickDetails: (Post) -> Unit
 ) {
     var filter by remember { mutableStateOf<PostTag?>(null) } // null = show all
 
@@ -64,7 +65,8 @@ fun HomeScreen(
                         post = post,
                         onAccept = onAccept,
                         isSaved = savedIds.contains(post.id),
-                        onToggleSaved = onToggleSaved
+                        onToggleSaved = onToggleSaved,
+                        onClickDetails = onClickDetails
                     )
                 }
             }

@@ -6,13 +6,15 @@ import com.sustech.sus_community.data.PostTag
 import com.sustech.sus_community.screens.HomeScreen
 import com.sustech.sus_community.ui.CreatePostScreen
 import com.sustech.sus_community.screens.MapScreen
+import com.sustech.sus_community.screens.PostDetailsScreen
 
 fun fakePosts() = listOf(
     Post(
         id = 1,
         author = "Alice Swift",
         title = "Trash Pickup event",
-        description = "Join us for cleaning!",
+        description = "Join us for a community clean-up around Dorm 3! We’ll provide gloves, bags, and snacks.\n" +
+                "All students, volunteers, and newcomers are welcome — let’s make our campus greener together!",
         location = "Dorm 3",
         tags = listOf(PostTag.AskHelp, PostTag.Newcomer),
         image = "https://loveincorporated.blob.core.windows.net/contentimages/gallery/03211459-0607-4d07-8a6c-9966e3820a7d-Mount-Kirkjufell-Iceland.jpg"
@@ -39,7 +41,8 @@ fun fakePosts() = listOf(
         id = 4,
         author = "Dana",
         title = "Tree planting",
-        description = "Looking for volunteers!",
+        description = "We’re planting 50 new trees this weekend in the SUSTech Garden area.\n" +
+                "No experience needed! Just bring your energy and a smile. Tools and refreshments are provided.",
         location = "Park",
         tags = listOf(PostTag.Event, PostTag.Volunteer),
         image = "https://greggvanourek.com/wp-content/uploads/2023/08/Nature-path-by-water-trees-and-mountains-AdobeStock_291242770-scaled.jpeg"
@@ -48,7 +51,8 @@ fun fakePosts() = listOf(
         id = 4,
         author = "Dana 2",
         title = "Free Tutoring",
-        description = "Looking for volunteers!",
+        description = "Ever wonder what happens to your plastic bottles? Come learn proper recycling habits and how to reduce daily waste.\n" +
+                "Free eco-kits for all participants!",
         location = "Park",
         tags = listOf(PostTag.Event, PostTag.Volunteer),
         image = "https://greggvanourek.com/wp-content/uploads/2023/08/Nature-path-by-water-trees-and-mountains-AdobeStock_291242770-scaled.jpeg"
@@ -70,6 +74,7 @@ fun App() {
     var screen by remember { mutableStateOf("home") }
     var posts by remember { mutableStateOf(fakePosts()) }
     var savedIds by remember { mutableStateOf<Set<Int>>(emptySet()) }
+    var selectedPost by remember { mutableStateOf<Post?>(null) }
 
     when (screen) {
         "home" -> HomeScreen(
@@ -78,6 +83,10 @@ fun App() {
                 posts = posts.map { if (it.id == id) it.copy(accepted = true) else it }
             },
             onCreatePost = { screen = "create" },
+            onClickDetails = { post ->
+                selectedPost = post
+                screen = "details"
+            },
             savedIds = savedIds,
             onToggleSaved = { id ->
                 savedIds = if (savedIds.contains(id)) savedIds - id else savedIds + id
@@ -103,5 +112,14 @@ fun App() {
         "map" -> MapScreen(
             onBack = { screen = "home"}
         )
+
+        "details" -> {
+            selectedPost?.let { post ->
+                PostDetailsScreen(
+                    post = post,
+                    onBack = { screen = "home" }
+                )
+            }
+        }
     }
 }
