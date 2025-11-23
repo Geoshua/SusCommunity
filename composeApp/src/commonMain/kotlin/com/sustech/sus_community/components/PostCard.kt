@@ -1,13 +1,21 @@
 package com.sustech.sus_community.ui
 
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import com.sustech.sus_community.data.Post
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+
 import androidx.compose.ui.unit.dp
+import io.kamel.core.utils.URI
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
+import org.jetbrains.compose.resources.painterResource
 
 
 @Composable
@@ -22,8 +30,23 @@ fun PostCard(
     ) {
         Column(Modifier.padding(20.dp)) {
 
+            // asyncPainterResource(data = URI("https://www.skh.com/wp-content/uploads/2025/01/SKHTreePlantingGuide1-min.jpg"))
 
-
+            KamelImage(
+                resource = {
+                    asyncPainterResource(data = post.image)
+                },
+                contentDescription = null,
+                modifier = Modifier.heightIn(max = 400.dp).aspectRatio(1f, true),
+                contentScale = ContentScale.Crop,
+                onLoading = {
+                    CircularProgressIndicator()
+                },
+                onFailure = {exception->
+                    Text(text = "Failed to load image, $exception")
+                },
+                animationSpec = tween(durationMillis = 300)
+            )
             Text(
                 post.title,
                 style = MaterialTheme.typography.titleLarge

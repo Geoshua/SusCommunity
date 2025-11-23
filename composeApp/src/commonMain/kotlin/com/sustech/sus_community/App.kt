@@ -15,7 +15,7 @@ fun fakePosts() = listOf(
         description = "Join us for cleaning!",
         location = "Dorm 3",
         tags = listOf(PostTag.AskHelp, PostTag.Newcomer),
-        image = "https://www.vintagetreecare.com/wp-content/uploads/2023/06/planting-tree-1024x683.jpg"
+        image = "https://loveincorporated.blob.core.windows.net/contentimages/gallery/03211459-0607-4d07-8a6c-9966e3820a7d-Mount-Kirkjufell-Iceland.jpg"
     ),
     Post(
         id = 2,
@@ -33,7 +33,7 @@ fun fakePosts() = listOf(
         description = "If you need help",
         location = "Library",
         tags = listOf(PostTag.OfferHelp, PostTag.Newcomer),
-        image = "https://www.vintagetreecare.com/wp-content/uploads/2023/06/planting-tree-1024x683.jpg"
+        image = "https://www.playmaker.de/wp-content/uploads/2022/02/thegermanlesson_intlposter_lowres1.jpg"
     ),
     Post(
         id = 4,
@@ -42,7 +42,7 @@ fun fakePosts() = listOf(
         description = "Looking for two players!",
         location = "Sports Center",
         tags = listOf(PostTag.Event, PostTag.Volunteer),
-        image = "https://www.vintagetreecare.com/wp-content/uploads/2023/06/planting-tree-1024x683.jpg"
+        image = "https://greggvanourek.com/wp-content/uploads/2023/08/Nature-path-by-water-trees-and-mountains-AdobeStock_291242770-scaled.jpeg"
     )
 )
 

@@ -57,7 +57,10 @@ fun HomeScreen(
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(18.dp)
             ) {
-                items(filteredPosts) { post ->
+                items(
+                    items = filteredPosts,
+                    key = { it.id }       // ⬅ FIX: give each item a unique key
+                ) { post ->
                     PostCard(post, onAccept)
                 }
             }

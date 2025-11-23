@@ -43,6 +43,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.shared)
+            implementation("media.kamel:kamel-image-default:1.0.8")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
