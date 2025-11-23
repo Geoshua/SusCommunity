@@ -170,7 +170,9 @@ actual fun MapContainer(
                     .bearing(0f)
                     .build()
             },
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 90.dp)
         )
     }
 }
