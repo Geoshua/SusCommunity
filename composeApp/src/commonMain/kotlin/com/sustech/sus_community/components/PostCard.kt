@@ -28,7 +28,8 @@ fun PostCard(
     post: Post,
     onAccept: (Int) -> Unit,
     isSaved: Boolean,
-    onToggleSaved: (Int) -> Unit
+    onToggleSaved: (Int) -> Unit,
+    onClickDetails: (Post) -> Unit
 ) {
     ElevatedCard(
         modifier = Modifier
@@ -87,6 +88,7 @@ fun PostCard(
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
                     thickness = 1.dp
                 )
+                Spacer(Modifier.height(12.dp))
 
                 // BUTTON ROW
                 Row(
@@ -94,7 +96,7 @@ fun PostCard(
                 ) {
                     // ✔ Flatter button style
                     Button(
-                        onClick = { onAccept(post.id) },
+                        onClick = { onClickDetails(post) },
                         modifier = Modifier.weight(1f),
                         shape = MaterialTheme.shapes.small,
                         colors = ButtonDefaults.buttonColors(

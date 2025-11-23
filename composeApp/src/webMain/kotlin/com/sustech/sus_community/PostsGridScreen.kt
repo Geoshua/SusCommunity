@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 fun PostsGridScreen(
     posts: List<Post>,
     onAccept: (Int) -> Unit,
+    onClickDetails: (Post) -> Unit,
     onCreatePost: () -> Unit
 ) {
     var filter by remember { mutableStateOf<PostTag?>(null) }
@@ -79,6 +80,7 @@ fun PostsGridScreen(
                 items(filteredPosts) { post ->
                     PostCard(
                         post = post,
+                        onClickDetails = onClickDetails,
                         onAccept = onAccept,
                         isSaved = false,
                         onToggleSaved = {}

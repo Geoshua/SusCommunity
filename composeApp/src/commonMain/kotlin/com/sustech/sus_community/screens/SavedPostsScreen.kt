@@ -23,7 +23,8 @@ fun SavedScreen(
     posts: List<Post>,
     savedIds: Set<Int>,
     onAccept: (Int) -> Unit,
-    onToggleSaved: (Int) -> Unit
+    onToggleSaved: (Int) -> Unit,
+    onClickDetails: (Post) -> Unit
 ) {
     val savedPosts = remember(posts, savedIds) { posts.filter { savedIds.contains(it.id) } }
 
@@ -43,7 +44,8 @@ fun SavedScreen(
                             post = post,
                             onAccept = onAccept,
                             isSaved = true,
-                            onToggleSaved = onToggleSaved
+                            onToggleSaved = onToggleSaved,
+                            onClickDetails = onClickDetails
                         )
                     }
                 }

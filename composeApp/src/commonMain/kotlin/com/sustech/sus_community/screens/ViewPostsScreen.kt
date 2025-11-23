@@ -6,11 +6,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 import com.sustech.sus_community.data.Post
 import com.sustech.sus_community.data.PostTag
 import com.sustech.sus_community.ui.PostCard
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -20,53 +22,43 @@ fun HomeScreen(
     onAccept: (Int) -> Unit,
     onCreatePost: () -> Unit,
     savedIds: Set<Int>,
-    onToggleSaved: (Int) -> Unit
+    onToggleSaved: (Int) -> Unit,
+    onClickDetails: (Post) -> Unit
 ) {
     var filter by remember { mutableStateOf<PostTag?>(null) } // null = show all
 
-    Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("Community") })
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = onCreatePost) {
-                Text("+")
+    Column(
+        modifier = Modifier
+            .padding(50.dp)
+            .fillMaxSize()
+    ) {
+        Text("Latest", style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Bold)
+
+        // FILTER ROW
+        FilterRow(
+            selected = filter,
+            onSelect = { filter = it }
+        )
+
+        Spacer(Modifier.height(20.dp))
+
+        val filteredPosts =
+            if (filter == null) posts
+            else posts.filter { post ->
+                post.tags.contains(filter)     // <-- FIX
             }
-        }
-    ) { padding ->
 
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .padding(20.dp)
-                .fillMaxSize()
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
-
-            // FILTER ROW
-            FilterRow(
-                selected = filter,
-                onSelect = { filter = it }
-            )
-
-            Spacer(Modifier.height(20.dp))
-
-            val filteredPosts =
-                if (filter == null) posts
-                else posts.filter { post ->
-                    post.tags.contains(filter)
-                }
-
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(18.dp)
-            ) {
-                items(filteredPosts) { post ->
-                    PostCard(
-                        post = post,
-                        onAccept = onAccept,
-                        isSaved = savedIds.contains(post.id),
-                        onToggleSaved = onToggleSaved
-                    )
-                }
+            items(filteredPosts) { post ->
+                PostCard(
+                    post = post,
+                    onAccept = onAccept,
+                    isSaved = savedIds.contains(post.id),
+                    onToggleSaved = onToggleSaved,
+                    onClickDetails = onClickDetails
+                )
             }
         }
     }
