@@ -31,6 +31,8 @@ import com.sustech.sus_community.data.Post
 import com.sustech.sus_community.screens.HomeScreen
 import com.sustech.sus_community.screens.SavedScreen
 import com.sustech.sus_community.ui.CreatePostScreen
+import com.sustech.sus_community.fakePosts
+import com.sustech.sus_community.screens.MapScreen
 
 private enum class AndroidTab(val label: String) {
     Feed("Feed"),
