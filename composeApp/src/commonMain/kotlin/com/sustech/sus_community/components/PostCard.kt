@@ -87,6 +87,7 @@ fun PostCard(
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
                     thickness = 1.dp
                 )
+                Spacer(Modifier.height(12.dp))
 
                 // BUTTON ROW
                 Row(
