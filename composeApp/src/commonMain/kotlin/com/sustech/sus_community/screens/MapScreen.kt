@@ -17,7 +17,6 @@ fun MapScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
         ) {
             // Map container - this will be replaced with actual Google Maps integration
             // using expect/actual pattern for platform-specific implementations
