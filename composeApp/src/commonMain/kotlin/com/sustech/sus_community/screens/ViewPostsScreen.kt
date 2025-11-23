@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 import com.sustech.sus_community.data.Post
@@ -27,9 +28,10 @@ fun HomeScreen(
 
     Column(
         modifier = Modifier
-            .padding(20.dp)
+            .padding(50.dp)
             .fillMaxSize()
     ) {
+        Text("Latest", style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Bold)
 
         // FILTER ROW
         FilterRow(
