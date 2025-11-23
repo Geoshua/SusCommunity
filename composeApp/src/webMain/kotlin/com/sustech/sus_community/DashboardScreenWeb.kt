@@ -86,7 +86,9 @@ fun DashboardScreenWeb() {
                 HomeScreen(
                     posts = posts,
                     onAccept = onAccept,
-                    onCreatePost = {} // disable FAB for web
+                    onCreatePost = {},
+                    savedIds = emptySet(),
+                    onToggleSaved = {}
                 )
             }
 
@@ -114,7 +116,9 @@ fun DashboardScreenWeb() {
                 HomeScreen(
                     posts = posts,
                     onAccept = onAccept,
-                    onCreatePost = {} // disable FAB for web
+                    onCreatePost = {},
+                    savedIds = emptySet(),
+                    onToggleSaved = {}
                 )
             }
         }

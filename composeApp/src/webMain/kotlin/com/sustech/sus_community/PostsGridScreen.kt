@@ -76,7 +76,7 @@ fun PostsGridScreen(
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(filteredPosts) { post ->
-                    PostCard(post, onAccept)
+                    PostCard(post, onAccept, false, {})
                 }
             }
         }
