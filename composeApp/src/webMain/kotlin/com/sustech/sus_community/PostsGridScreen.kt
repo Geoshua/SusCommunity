@@ -1,5 +1,6 @@
 package com.sustech.sus_community
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Scaffold
@@ -26,7 +30,7 @@ import com.sustech.sus_community.ui.PostCard
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun PostsGridScreen(
     posts: List<Post>,
@@ -37,7 +41,7 @@ fun PostsGridScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Community") })
+            TopAppBar(title = { Text("Community Posts") })
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onCreatePost) {
@@ -49,7 +53,7 @@ fun PostsGridScreen(
         Column(
             modifier = Modifier
                 .padding(padding)
-                .padding(20.dp)
+                .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) {
 
@@ -59,24 +63,26 @@ fun PostsGridScreen(
                 onSelect = { filter = it }
             )
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(16.dp))
 
             // Filter logic
-            val filteredPosts =
-                if (filter == null) posts
-                else posts.filter { post ->
-                    post.tags.contains(filter)
-                }
+            val filteredPosts = if (filter == null) posts
+            else posts.filter { post -> filter in post.tags }
 
-            // -------- GRID VIEW (like Instagram) --------
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 240.dp),
+            // ------- ⭐ STAGGERED GALLERY GRID -------
+            LazyVerticalStaggeredGrid(
+                columns = StaggeredGridCells.Fixed(2),         // 2 Pinterest-like columns
+                verticalItemSpacing = 16.dp,                   // gap between items vertically
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(filteredPosts) { post ->
-                    PostCard(post, onAccept, false, {})
+                    PostCard(
+                        post = post,
+                        onAccept = onAccept,
+                        isSaved = false,
+                        onToggleSaved = {}
+                    )
                 }
             }
         }

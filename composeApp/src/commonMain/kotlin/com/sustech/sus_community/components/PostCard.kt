@@ -1,7 +1,5 @@
 package com.sustech.sus_community.ui
 
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import com.sustech.sus_community.data.Post
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -22,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.ui.Alignment
+import com.sustech.sus_community.models.PostTag
 
 @Preview
 @Composable
@@ -32,88 +31,94 @@ fun PostCard(
     onToggleSaved: (Int) -> Unit
 ) {
     ElevatedCard(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.elevatedCardElevation(4.dp),
+        modifier = Modifier
+            .fillMaxWidth(),
+        elevation = CardDefaults.elevatedCardElevation(2.dp),
         shape = MaterialTheme.shapes.medium
     ) {
-        Column(Modifier.padding(20.dp)) {
-
-            // asyncPainterResource(data = URI("https://www.skh.com/wp-content/uploads/2025/01/SKHTreePlantingGuide1-min.jpg"))
+        Column {
 
             KamelImage(
                 resource = {
-                    asyncPainterResource(data = post.image)
+                    asyncPainterResource(data = URI(post.image))
                 },
                 contentDescription = null,
-                modifier = Modifier.heightIn(max = 400.dp).aspectRatio(1f, true),
-                contentScale = ContentScale.Crop,
-                onLoading = {
-                    CircularProgressIndicator()
-                },
-                onFailure = {exception->
-                    Text(text = "Failed to load image, $exception")
-                },
-                animationSpec = tween(durationMillis = 300)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .padding(6.dp)
+                    .clip(MaterialTheme.shapes.medium),
+                contentScale = ContentScale.Crop, // crops vertical images nicely
+                onLoading = { CircularProgressIndicator() },
+                onFailure = {
+                    KamelImage(
+                        resource = asyncPainterResource("https://picsum.photos/800/800"),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
+                    )
+                }
             )
-            Text(
-                post.title,
-                style = MaterialTheme.typography.titleLarge
-            )
-
-            Spacer(Modifier.height(6.dp))
-
-            Text(
-                "by ${post.author}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-
-            Spacer(Modifier.height(12.dp))
-
-            Text(
-                post.description,
-                style = MaterialTheme.typography.bodyLarge
-            )
-
-            Spacer(Modifier.height(18.dp))
-
-            Text(
-                "\uD83D\uDCCC ${post.location}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-
-            Spacer(Modifier.height(12.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+            // CONTENT AREA
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
-                if (!post.accepted) {
+
+                // ✔ Title styling—cleaner & stronger
+                Text(
+                    text = post.title,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                )
+
+                Spacer(Modifier.height(4.dp))
+
+                // ✔ Author in lighter tone and smaller font
+                Text(
+                    "by ${post.author}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(Modifier.height(12.dp))
+
+                Divider(
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                    thickness = 1.dp
+                )
+
+                // BUTTON ROW
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // ✔ Flatter button style
                     Button(
                         onClick = { onAccept(post.id) },
                         modifier = Modifier.weight(1f),
-                        shape = MaterialTheme.shapes.medium
+                        shape = MaterialTheme.shapes.small,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        )
                     ) {
-                        Text("Accept Request")
+                        if (post.tags.contains(com.sustech.sus_community.data.PostTag.Event)) {
+                            Text("Join")
+                        } else {
+                            Text("Learn More")
+                        }
                     }
-                } else {
-                    Text(
-                        "Accepted",
-                        color = Color(0xFF34C759),
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
 
-                Spacer(Modifier.width(12.dp))
+                    Spacer(Modifier.width(8.dp))
 
-                IconButton(
-                    onClick = { onToggleSaved(post.id) }
-                ) {
-                    Icon(
-                        imageVector = if (isSaved) Icons.Filled.Bookmarks else Icons.Outlined.Bookmarks,
-                        contentDescription = if (isSaved) "Saved ✓" else "+Save"
-                    )
+                    // Bookmark button
+                    IconButton(onClick = { onToggleSaved(post.id) }) {
+                        Icon(
+                            imageVector = if (isSaved)
+                                Icons.Filled.Bookmarks
+                            else Icons.Outlined.Bookmarks,
+                            contentDescription = if (isSaved) "Saved ✓" else "Save"
+                        )
+                    }
                 }
             }
         }
