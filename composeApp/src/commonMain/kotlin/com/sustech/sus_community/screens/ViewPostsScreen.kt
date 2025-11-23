@@ -18,7 +18,9 @@ import com.sustech.sus_community.ui.PostCard
 fun HomeScreen(
     posts: List<Post>,
     onAccept: (Int) -> Unit,
-    onCreatePost: () -> Unit
+    onCreatePost: () -> Unit,
+    savedIds: Set<Int>,
+    onToggleSaved: (Int) -> Unit
 ) {
     var filter by remember { mutableStateOf<PostTag?>(null) } // null = show all
 
@@ -57,16 +59,20 @@ fun HomeScreen(
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(18.dp)
             ) {
-                items(
-                    items = filteredPosts,
-                    key = { it.id }       // ⬅ FIX: give each item a unique key
-                ) { post ->
-                    PostCard(post, onAccept)
+                items(filteredPosts) { post ->
+                    PostCard(
+                        post = post,
+                        onAccept = onAccept,
+                        isSaved = savedIds.contains(post.id),
+                        onToggleSaved = onToggleSaved
+                    )
                 }
             }
         }
     }
 }
+
+
 
 @Composable
 fun FilterRow(

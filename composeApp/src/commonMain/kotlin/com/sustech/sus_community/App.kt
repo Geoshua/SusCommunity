@@ -51,6 +51,7 @@ fun fakePosts() = listOf(
 fun App() {
     var screen by remember { mutableStateOf("home") }
     var posts by remember { mutableStateOf(fakePosts()) }
+    var savedIds by remember { mutableStateOf<Set<Int>>(emptySet()) }
 
     when (screen) {
         "home" -> HomeScreen(
@@ -58,7 +59,11 @@ fun App() {
             onAccept = { id ->
                 posts = posts.map { if (it.id == id) it.copy(accepted = true) else it }
             },
-            onCreatePost = { screen = "create" }
+            onCreatePost = { screen = "create" },
+            savedIds = savedIds,
+            onToggleSaved = { id ->
+                savedIds = if (savedIds.contains(id)) savedIds - id else savedIds + id
+            }
         )
 
         "create" -> CreatePostScreen(

@@ -9,16 +9,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.AddCircle
-import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.AddCircleOutline
+import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,12 +29,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.padding
 import com.sustech.sus_community.data.Post
 import com.sustech.sus_community.screens.HomeScreen
+import com.sustech.sus_community.screens.SavedScreen
 import com.sustech.sus_community.ui.CreatePostScreen
-import com.sustech.sus_community.fakePosts
 
 private enum class AndroidTab(val label: String) {
     Feed("Feed"),
-    Favourites("Favourites"),
+    Saved("Saved"),
     Create("Create"),
     Map("Map"),
     Profile("Profile")
@@ -44,6 +44,7 @@ private enum class AndroidTab(val label: String) {
 fun AndroidTabbedApp() {
     var selectedTab by remember { mutableStateOf(AndroidTab.Feed) }
     var posts by remember { mutableStateOf<List<Post>>(fakePosts()) }
+    var savedIds by remember { mutableStateOf<Set<Int>>(emptySet()) }
 
     Scaffold(
         bottomBar = {
@@ -57,8 +58,8 @@ fun AndroidTabbedApp() {
                         icon = {
                             val icon = when (tab) {
                                 AndroidTab.Feed -> if (selectedTab == tab) Icons.Filled.Home else Icons.Outlined.Home
-                                AndroidTab.Favourites -> if (selectedTab == tab) Icons.Filled.Favorite else Icons.Outlined.Favorite
-                                AndroidTab.Create -> if (selectedTab == tab) Icons.Filled.AddCircle else Icons.Outlined.AddCircle
+                                AndroidTab.Saved -> if (selectedTab == tab) Icons.Filled.Bookmarks else Icons.Outlined.Bookmarks
+                                AndroidTab.Create -> if (selectedTab == tab) Icons.Filled.AddCircle else Icons.Outlined.AddCircleOutline
                                 AndroidTab.Map -> if (selectedTab == tab) Icons.Filled.Map else Icons.Outlined.Map
                                 AndroidTab.Profile -> if (selectedTab == tab) Icons.Filled.Person else Icons.Outlined.Person
                             }
@@ -76,7 +77,11 @@ fun AndroidTabbedApp() {
                     onAccept = { id ->
                         posts = posts.map { if (it.id == id) it.copy(accepted = true) else it }
                     },
-                    onCreatePost = { selectedTab = AndroidTab.Create }
+                    onCreatePost = { selectedTab = AndroidTab.Create },
+                    savedIds = savedIds,
+                    onToggleSaved = { id ->
+                        savedIds = if (savedIds.contains(id)) savedIds - id else savedIds + id
+                    }
                 )
 
                 AndroidTab.Create -> CreatePostScreen(
@@ -93,8 +98,16 @@ fun AndroidTabbedApp() {
                     },
                     onCancel = { selectedTab = AndroidTab.Feed }
                 )
-
-                AndroidTab.Favourites -> PlaceholderScreen("Favourites coming soon")
+                AndroidTab.Saved -> SavedScreen(
+                    posts = posts,
+                    savedIds = savedIds,
+                    onAccept = { id ->
+                        posts = posts.map { if (it.id == id) it.copy(accepted = true) else it }
+                    },
+                    onToggleSaved = { id ->
+                        savedIds = if (savedIds.contains(id)) savedIds - id else savedIds + id
+                    }
+                )
                 AndroidTab.Map -> PlaceholderScreen("Map coming soon")
                 AndroidTab.Profile -> PlaceholderScreen("Profile coming soon")
             }
