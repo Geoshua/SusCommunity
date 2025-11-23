@@ -34,6 +34,7 @@ import com.sustech.sus_community.data.Post
 import com.sustech.sus_community.screens.HomeScreen
 import com.sustech.sus_community.screens.SavedScreen
 import com.sustech.sus_community.screens.ProfileScreen
+import com.sustech.sus_community.screens.PostDetailScreen
 import com.sustech.sus_community.ui.CreatePostScreen
 import com.sustech.sus_community.fakePosts
 import com.sustech.sus_community.screens.MapScreen
@@ -54,6 +55,7 @@ fun AndroidTabbedApp() {
     var selectedTab by remember { mutableStateOf(AndroidTab.Feed) }
     var posts by remember { mutableStateOf<List<Post>>(fakePosts()) }
     var savedIds by remember { mutableStateOf<Set<Int>>(emptySet()) }
+    var selectedPost by remember { mutableStateOf<Post?>(null) }
 
     // Temporary current user until auth/profile storage is added
     val currentUser = remember {
@@ -131,7 +133,7 @@ fun AndroidTabbedApp() {
                         savedIds = if (savedIds.contains(id)) savedIds - id else savedIds + id
                     },
                     onClickDetails = { post ->
-                        // TODO: Navigate to post details screen
+                        selectedPost = post
                     }
                 )
 
@@ -160,13 +162,33 @@ fun AndroidTabbedApp() {
                         savedIds = if (savedIds.contains(id)) savedIds - id else savedIds + id
                     },
                     onClickDetails = { post ->
-                        // TODO: Navigate to post details screen
+                        selectedPost = post
                     }
                 )
                 AndroidTab.Map -> MapScreen(
                     onBack = { selectedTab = AndroidTab.Feed }
                 )
                 AndroidTab.Profile -> ProfileScreen(user = currentUser)
+            }
+
+            // Show PostDetailScreen overlay when a post is selected
+            selectedPost?.let { post ->
+                PostDetailScreen(
+                    post = post,
+                    isSaved = savedIds.contains(post.id),
+                    onBack = { selectedPost = null },
+                    onToggleSaved = {
+                        savedIds = if (savedIds.contains(post.id)) {
+                            savedIds - post.id
+                        } else {
+                            savedIds + post.id
+                        }
+                    },
+                    onAccept = {
+                        posts = posts.map { if (it.id == post.id) it.copy(accepted = true) else it }
+                        selectedPost = null
+                    }
+                )
             }
         }
     }

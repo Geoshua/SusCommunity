@@ -6,7 +6,7 @@ import com.sustech.sus_community.data.PostTag
 import com.sustech.sus_community.screens.HomeScreen
 import com.sustech.sus_community.ui.CreatePostScreen
 import com.sustech.sus_community.screens.MapScreen
-import com.sustech.sus_community.screens.PostDetailsScreen
+import com.sustech.sus_community.screens.PostDetailScreen
 
 fun fakePosts() = listOf(
     Post(
@@ -115,9 +115,21 @@ fun App() {
 
         "details" -> {
             selectedPost?.let { post ->
-                PostDetailsScreen(
+                PostDetailScreen(
                     post = post,
-                    onBack = { screen = "home" }
+                    isSaved = savedIds.contains(post.id),
+                    onBack = { screen = "home" },
+                    onToggleSaved = {
+                        savedIds = if (savedIds.contains(post.id)) {
+                            savedIds - post.id
+                        } else {
+                            savedIds + post.id
+                        }
+                    },
+                    onAccept = {
+                        posts = posts.map { if (it.id == post.id) it.copy(accepted = true) else it }
+                        screen = "home"
+                    }
                 )
             }
         }
