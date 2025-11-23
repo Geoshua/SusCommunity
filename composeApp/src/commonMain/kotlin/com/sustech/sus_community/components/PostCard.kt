@@ -22,7 +22,6 @@ import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.ui.Alignment
 import com.sustech.sus_community.models.PostTag
 
-@Preview
 @Composable
 fun PostCard(
     post: Post,

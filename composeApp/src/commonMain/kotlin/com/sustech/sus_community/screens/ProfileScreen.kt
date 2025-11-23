@@ -28,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -43,7 +42,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import com.sustech.sus_community.models.UserRole
 
 
-@Preview
 @Composable
 fun ProfileScreen(user: User) {
     Surface(modifier = Modifier.fillMaxSize()) {
