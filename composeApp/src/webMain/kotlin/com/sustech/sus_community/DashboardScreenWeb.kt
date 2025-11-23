@@ -32,8 +32,9 @@ import com.sustech.sus_community.screens.PostDetailsScreen
 import com.sustech.sus_community.screens.ProfileScreen
 import com.sustech.sus_community.ui.CreatePostScreen
 
-private val SusBlue = Color(0xFF1A73E8)     // Google-style blue
-private val SusDarkBlue = Color(0xFF1558B0) // Darker variant for shadow
+
+private val SusDarkGreen = Color(0x0E1E16) // Darker variant for shadow
+private val SusGreen = Color(0xFF49796B)
 
 enum class MiddleView {
     POSTS,
@@ -82,12 +83,12 @@ fun DashboardScreenWeb() {
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = SusBlue,
+                    containerColor = SusGreen,
                     titleContentColor = Color.White
                 ),
                 modifier = Modifier.height(56.dp)
             )
-            Divider(color = SusDarkBlue, thickness = 3.dp)
+            Divider(color = SusDarkGreen, thickness = 3.dp)
         }
     ) { padding ->
 
