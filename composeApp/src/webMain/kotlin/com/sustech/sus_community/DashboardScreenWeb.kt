@@ -1,6 +1,8 @@
 package com.sustech.sus_community
 
 
+
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,8 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import com.sustech.sus_community.screens.HomeScreen
 import androidx.compose.ui.graphics.Color
+
 import com.sustech.sus_community.data.Post
 import com.sustech.sus_community.models.Gender
 import com.sustech.sus_community.models.User
@@ -31,6 +33,8 @@ import com.sustech.sus_community.screens.MapScreen
 import com.sustech.sus_community.screens.PostDetailsScreen
 import com.sustech.sus_community.screens.ProfileScreen
 import com.sustech.sus_community.ui.CreatePostScreen
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 
 
 private val SusDarkGreen = Color(0x0E1E16) // Darker variant for shadow
@@ -77,9 +81,9 @@ fun DashboardScreenWeb() {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        "SUS Community",
-                        style = MaterialTheme.typography.headlineSmall.copy(color = Color.White)
+                    KamelImage(
+                        resource = asyncPainterResource("logo.png"),
+                        contentDescription = "Logo"
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
