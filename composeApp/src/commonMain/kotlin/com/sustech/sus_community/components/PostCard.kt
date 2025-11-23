@@ -32,9 +32,11 @@ fun PostCard(
     onClickDetails: (Post) -> Unit
 ) {
     ElevatedCard(
-        modifier = Modifier
-            .fillMaxWidth(),
-        elevation = CardDefaults.elevatedCardElevation(2.dp),
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.elevatedCardElevation(4.dp),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
         shape = MaterialTheme.shapes.medium
     ) {
         Column {

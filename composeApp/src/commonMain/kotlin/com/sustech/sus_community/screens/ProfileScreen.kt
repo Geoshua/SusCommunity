@@ -5,14 +5,12 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -57,13 +55,7 @@ fun ProfileScreen(user: User) {
                         .fillMaxWidth()
                         .height(220.dp)
                         .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.primary,
-                                    MaterialTheme.colorScheme.secondary
-                                )
-                            )
+                        .background(Color(0xFF06402B)
                         )
                 )
                 // Overlay: avatar, name, username, and stats on top of gradient
@@ -80,28 +72,28 @@ fun ProfileScreen(user: User) {
                     Box(
                         modifier = Modifier
                             .size(150.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.surface)
-                            .shadow(8.dp, CircleShape, clip = false),
+                        ,
                         contentAlignment = Alignment.Center
                     ) {
-                        // subtle radial tint
+                        // Under white circle (full size)
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(
-                                    brush = Brush.radialGradient(
-                                        colors = listOf(
-                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.14f),
-                                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.04f)
-                                        )
-                                    )
-                                )
+                                .clip(CircleShape)
+                                .background(Color.White)
+                        )
+
+                        // Upper smaller light green circle
+                        Box(
+                            modifier = Modifier
+                                .size(130.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFFBBB791))
                         )
                         Text(
                             text = initials,
-                            style = MaterialTheme.typography.displaySmall,
-                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.displayLarge,
+                            color = Color(0xFF0F1210),
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -221,6 +213,9 @@ private fun StatChip(label: String?, value: String, headerStyle: Boolean = false
 private fun SectionCard(title: String, content: @Composable () -> Unit) {
     ElevatedCard(
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -313,6 +308,9 @@ private data class Badge(
 private fun BadgeChip(badge: Badge) {
     ElevatedCard(
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .width(110.dp)

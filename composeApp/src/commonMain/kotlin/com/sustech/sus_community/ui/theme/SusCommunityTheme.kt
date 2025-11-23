@@ -15,7 +15,7 @@ private val Sand = Color(0xFFBBB791) // on colors / accents
 private val SusCommunityDarkColors = darkColorScheme(
     primary = DeepGreen,
     onPrimary = Sand,
-    secondary = TealGray,
+    secondary = NightGreen,
     onSecondary = Sand,
     background = NightGreen,
     onBackground = Sand,
@@ -25,7 +25,7 @@ private val SusCommunityDarkColors = darkColorScheme(
     onPrimaryContainer = Sand,
     secondaryContainer = TealGray.copy(alpha = 0.85f),
     onSecondaryContainer = Sand,
-    surfaceVariant = NightGreen.copy(alpha = 0.8f),
+    surfaceVariant = Color(0xFF232925),
     onSurfaceVariant = Sand.copy(alpha = 0.9f),
 )
 private val SusCommunityLightColors = lightColorScheme(
@@ -41,7 +41,8 @@ private val SusCommunityLightColors = lightColorScheme(
     onPrimaryContainer = Color(0xFF9ED4B7),
     secondaryContainer = Color(0xFF06402B),
     onSecondaryContainer = Color(0xFFFFFFFF),
-    surfaceVariant = Color(0xFFDCE5DD),
+    // Slightly lighter neutral for variant surfaces in light theme
+    surfaceVariant = Color(0xFFE7EAE7),
     onSurfaceVariant = Color(0xFF303833),
 )
 

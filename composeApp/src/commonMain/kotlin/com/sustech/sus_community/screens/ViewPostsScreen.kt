@@ -29,7 +29,7 @@ fun HomeScreen(
 
     Column(
         modifier = Modifier
-            .padding(50.dp)
+            .padding(top = 50.dp, start = 20.dp, end = 20.dp)
             .fillMaxSize()
     ) {
         Text("Latest", style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Bold)
