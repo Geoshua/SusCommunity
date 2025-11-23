@@ -73,7 +73,7 @@ fun PostCard(
                 } else {
                     Text(
                         "Accepted",
-                        color = Color(0xFF34C759),
+                        color = MaterialTheme.colorScheme.secondary,
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.weight(1f)
                     )
